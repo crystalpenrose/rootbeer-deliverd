@@ -2,21 +2,37 @@ namespace SpriteKind {
     export const Target = SpriteKind.create()
     export const LeaveToken = SpriteKind.create()
 }
-sprites.onOverlap(SpriteKind.Player, SpriteKind.Target, function (sprite, otherSprite) {
-    music.baDing.play()
-    info.changeScoreBy(1)
-})
+function deliverRootBeer () {
+    if (controller.A.isPressed() && RootBeer.tileKindAt(TileDirection.Bottom, assets.tile`TileTable`)) {
+        music.baDing.play()
+        info.changeScoreBy(1)
+        effects.confetti.startScreenEffect(500)
+    }
+}
+function pickUpRootBeer () {
+    if (Waitress.overlapsWith(RootBeer)) {
+        RootBeer.follow(Waitress, 100)
+    }
+}
+function follow (followerSprite: Sprite, controllingSprite: Sprite) {
+
+    followerSprite.setPosition(controllingSprite.x, controllingSprite.y)
+}
+function createNewRootBeer () {
+	
+}
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
     music.powerDown.play()
     info.changeLifeBy(-1)
 })
-effects.confetti.startScreenEffect(5000)
+let SecondsTime = 0
+let RootBeer: Sprite = null
+let Waitress: Sprite = null
 scene.setBackgroundColor(13)
 tiles.setCurrentTilemap(tilemap`Level1Map`)
 info.setScore(0)
 info.setLife(2)
-let SecondsTime = 0
-let Waitress = sprites.create(img`
+Waitress = sprites.create(img`
     . . . . . . 5 5 5 5 . . . . . . 
     . . . . . . 5 5 5 5 . . . . . . 
     . . . . . . 5 5 5 5 . . . . . . 
@@ -40,7 +56,7 @@ Waitress.ax = 0
 Waitress.ay = 0
 scene.cameraFollowSprite(Waitress)
 Waitress.setStayInScreen(true)
-let RootBeer = sprites.create(assets.image`RootBeer`, SpriteKind.LeaveToken)
+RootBeer = sprites.create(assets.image`RootBeer`, SpriteKind.LeaveToken)
 RootBeer.follow(Waitress)
 RootBeer.setPosition(10, 102)
 let MountainDew = sprites.create(assets.image`MtnDew`, SpriteKind.Enemy)
@@ -58,7 +74,7 @@ forever(function () {
     SecondsTime += 1
 })
 forever(function () {
-    Waitress.ay = 10
+    Waitress.ay = 25
 })
 forever(function () {
     if (controller.right.isPressed()) {
