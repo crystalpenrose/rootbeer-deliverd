@@ -8,10 +8,13 @@ function deliverRootBeer () {
         music.baDing.play()
         info.changeScoreBy(1)
         effects.confetti.startScreenEffect(500)
+        pause(2000)
+        createNewRootBeer(RootBeer)
     }
 }
 function unfollow (followerSprite: Sprite, controllingSprite: Sprite) {
     followerSprite.setPosition(followerSprite.x, followerSprite.y)
+    followerSprite.setVelocity(0, 0)
 }
 function pickUpRootBeer (picker_upper: Sprite, thingtopickup: Sprite) {
     if (picker_upper.overlapsWith(thingtopickup)) {
@@ -22,14 +25,16 @@ function follow (followerSprite: Sprite, controllingSprite: Sprite) {
     followerSprite.setPosition(controllingSprite.x, controllingSprite.y)
     followerSprite.setVelocity(controllingSprite.vx, controllingSprite.vy)
 }
-function createNewRootBeer () {
-    RootBeer = sprites.create(assets.image`RootBeer`, SpriteKind.LeaveToken)
+function createNewRootBeer (newrootbeer: Sprite) {
+    newrootbeer = sprites.create(assets.image`RootBeer`, SpriteKind.LeaveToken)
+    newrootbeer.setPosition(82, 57)
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
     music.powerDown.play()
     info.changeLifeBy(-1)
 })
 let SecondsTime = 0
+let newrootbeer: Sprite = null
 let RootBeer: Sprite = null
 let Waitress: Sprite = null
 let mySprite = 0
@@ -75,13 +80,6 @@ let Mr_Pibb = sprites.create(assets.image`Mr Pibb`, SpriteKind.Enemy)
 Mr_Pibb.setPosition(49, 7)
 Mr_Pibb.setStayInScreen(true)
 forever(function () {
-    pause(1000)
-    SecondsTime += 1
-})
-forever(function () {
-    Waitress.ay = 25
-})
-forever(function () {
     if (controller.right.isPressed()) {
         Waitress.vx = 10
     }
@@ -94,4 +92,15 @@ forever(function () {
     if (controller.down.isPressed()) {
         Waitress.vy = 100
     }
+})
+forever(function () {
+    Waitress.ay = 25
+})
+forever(function () {
+    pause(1000)
+    SecondsTime += 1
+})
+forever(function () {
+    pickUpRootBeer(Waitress, RootBeer)
+    deliverRootBeer()
 })
