@@ -1,13 +1,11 @@
 namespace SpriteKind {
     export const Target = SpriteKind.create()
+    export const LeaveToken = SpriteKind.create()
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Target, function (sprite, otherSprite) {
     music.baDing.play()
     info.changeScoreBy(1)
 })
-function GravityAcceleration (num: number) {
-	
-}
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
     music.powerDown.play()
     info.changeLifeBy(-1)
@@ -18,13 +16,6 @@ tiles.setCurrentTilemap(tilemap`Level1Map`)
 info.setScore(0)
 info.setLife(2)
 let SecondsTime = 0
-let RootBeer = sprites.create(assets.image`RootBeer`, SpriteKind.Player)
-RootBeer.setPosition(8, 102)
-RootBeer.setVelocity(10, 0)
-RootBeer.ax = 0
-RootBeer.ay = 0
-scene.cameraFollowSprite(RootBeer)
-RootBeer.setStayInScreen(true)
 let Waitress = sprites.create(img`
     . . . . . . 5 5 5 5 . . . . . . 
     . . . . . . 5 5 5 5 . . . . . . 
@@ -43,8 +34,15 @@ let Waitress = sprites.create(img`
     . . 3 3 3 3 3 3 3 3 3 3 3 3 . . 
     . 3 3 3 3 3 3 3 3 3 3 3 3 3 3 . 
     `, SpriteKind.Player)
-Waitress.follow(RootBeer)
 Waitress.setPosition(8, 102)
+Waitress.setVelocity(10, 0)
+Waitress.ax = 0
+Waitress.ay = 0
+scene.cameraFollowSprite(Waitress)
+Waitress.setStayInScreen(true)
+let RootBeer = sprites.create(assets.image`RootBeer`, SpriteKind.LeaveToken)
+RootBeer.follow(Waitress)
+RootBeer.setPosition(10, 102)
 let MountainDew = sprites.create(assets.image`MtnDew`, SpriteKind.Enemy)
 MountainDew.setVelocity(20, 10)
 MountainDew.setBounceOnWall(true)
@@ -60,19 +58,19 @@ forever(function () {
     SecondsTime += 1
 })
 forever(function () {
-    GravityAcceleration(1)
+    Waitress.ay = 10
 })
 forever(function () {
     if (controller.right.isPressed()) {
-        RootBeer.vx = 10
+        Waitress.vx = 10
     }
     if (controller.left.isPressed()) {
-        RootBeer.vx = -10
+        Waitress.vx = -10
     }
     if (controller.up.isPressed()) {
-        RootBeer.vy = -10
+        Waitress.vy = -25
     }
     if (controller.down.isPressed()) {
-        RootBeer.vy = 100
+        Waitress.vy = 100
     }
 })
