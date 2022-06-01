@@ -4,22 +4,26 @@ namespace SpriteKind {
 }
 function deliverRootBeer () {
     if (controller.A.isPressed() && RootBeer.tileKindAt(TileDirection.Bottom, assets.tile`TileTable`)) {
+        unfollow(RootBeer, Waitress)
         music.baDing.play()
         info.changeScoreBy(1)
         effects.confetti.startScreenEffect(500)
     }
 }
-function pickUpRootBeer () {
-    if (Waitress.overlapsWith(RootBeer)) {
-        RootBeer.follow(Waitress, 100)
+function unfollow (followerSprite: Sprite, controllingSprite: Sprite) {
+    followerSprite.setPosition(followerSprite.x, followerSprite.y)
+}
+function pickUpRootBeer (picker_upper: Sprite, thingtopickup: Sprite) {
+    if (picker_upper.overlapsWith(thingtopickup)) {
+        follow(RootBeer, Waitress)
     }
 }
 function follow (followerSprite: Sprite, controllingSprite: Sprite) {
-
     followerSprite.setPosition(controllingSprite.x, controllingSprite.y)
+    followerSprite.setVelocity(controllingSprite.vx, controllingSprite.vy)
 }
 function createNewRootBeer () {
-	
+    RootBeer = sprites.create(assets.image`RootBeer`, SpriteKind.LeaveToken)
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
     music.powerDown.play()
@@ -28,6 +32,8 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
 let SecondsTime = 0
 let RootBeer: Sprite = null
 let Waitress: Sprite = null
+let mySprite = 0
+mySprite = null
 scene.setBackgroundColor(13)
 tiles.setCurrentTilemap(tilemap`Level1Map`)
 info.setScore(0)
@@ -57,8 +63,7 @@ Waitress.ay = 0
 scene.cameraFollowSprite(Waitress)
 Waitress.setStayInScreen(true)
 RootBeer = sprites.create(assets.image`RootBeer`, SpriteKind.LeaveToken)
-RootBeer.follow(Waitress)
-RootBeer.setPosition(10, 102)
+RootBeer.setPosition(74, 91)
 let MountainDew = sprites.create(assets.image`MtnDew`, SpriteKind.Enemy)
 MountainDew.setVelocity(20, 10)
 MountainDew.setBounceOnWall(true)
