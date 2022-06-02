@@ -1,5 +1,5 @@
 {
-    "name": "RootBeer Deliverd",
+    "name": "RootBeer Delivered",
     "description": "",
     "dependencies": {
         "device": "*",
@@ -25,5 +25,5 @@
     "supportedTargets": [
         "arcade"
     ],
-    "preferredEditor": "tsprj"
+    "preferredEditor": "blocksprj"
 }

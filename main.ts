@@ -6,10 +6,24 @@ function deliverRootBeer () {
     if (controller.A.isPressed() && RootBeer.tileKindAt(TileDirection.Bottom, assets.tile`TileTable`)) {
         unfollow(RootBeer, Waitress)
         music.baDing.play()
+        effects.bubbles.startScreenEffect(500)
         info.changeScoreBy(1)
-        effects.confetti.startScreenEffect(500)
-        pause(2000)
-        createNewRootBeer(RootBeer)
+        pause(500)
+        spawnNewRootBeer()
+    } else if (controller.A.isPressed() && RootBeer.tileKindAt(TileDirection.Bottom, assets.tile`Endtable`)) {
+        unfollow(RootBeer, Waitress)
+        info.changeScoreBy(1)
+        music.magicWand.play()
+        effects.bubbles.startScreenEffect(500)
+        game.over(true)
+    } else if (controller.A.isPressed() && RootBeer.tileKindAt(TileDirection.Center, assets.tile`BrokenTableTile`)) {
+        unfollow(RootBeer, Waitress)
+        music.wawawawaa.play()
+        info.changeScoreBy(-1)
+        pause(500)
+        spawnNewRootBeer()
+    } else {
+    	
     }
 }
 function unfollow (followerSprite: Sprite, controllingSprite: Sprite) {
@@ -25,24 +39,27 @@ function follow (followerSprite: Sprite, controllingSprite: Sprite) {
     followerSprite.setPosition(controllingSprite.x, controllingSprite.y)
     followerSprite.setVelocity(controllingSprite.vx, controllingSprite.vy)
 }
-function createNewRootBeer (newrootbeer: Sprite) {
-    newrootbeer = sprites.create(assets.image`RootBeer`, SpriteKind.LeaveToken)
-    newrootbeer.setPosition(82, 57)
+function spawnNewRootBeer () {
+    for (let index = 0; index <= 5; index++) {
+        newrootbeer.push(index)
+        newrootbeer = sprites.create(assets.image`RootBeer`, SpriteKind.LeaveToken)
+        newrootbeer.setPosition(scene.cameraProperty(CameraProperty.Right), scene.cameraProperty(CameraProperty.Top))
+    }
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
     music.powerDown.play()
     info.changeLifeBy(-1)
+    pause(200)
 })
-let SecondsTime = 0
-let newrootbeer: Sprite = null
+let newrootbeer: number[] = []
 let RootBeer: Sprite = null
 let Waitress: Sprite = null
 let mySprite = 0
 mySprite = null
 scene.setBackgroundColor(13)
 tiles.setCurrentTilemap(tilemap`Level1Map`)
-info.setScore(0)
 info.setLife(2)
+info.setScore(0)
 Waitress = sprites.create(img`
     . . . . . . 5 5 5 5 . . . . . . 
     . . . . . . 5 5 5 5 . . . . . . 
@@ -79,26 +96,23 @@ Monster.setStayInScreen(true)
 let Mr_Pibb = sprites.create(assets.image`Mr Pibb`, SpriteKind.Enemy)
 Mr_Pibb.setPosition(49, 7)
 Mr_Pibb.setStayInScreen(true)
+newrootbeer = []
 forever(function () {
     if (controller.right.isPressed()) {
-        Waitress.vx = 10
+        Waitress.vx = 30
     }
     if (controller.left.isPressed()) {
-        Waitress.vx = -10
+        Waitress.vx = -20
     }
     if (controller.up.isPressed()) {
-        Waitress.vy = -25
+        Waitress.vy = -30
     }
     if (controller.down.isPressed()) {
         Waitress.vy = 100
     }
 })
 forever(function () {
-    Waitress.ay = 25
-})
-forever(function () {
-    pause(1000)
-    SecondsTime += 1
+    Waitress.ay = 30
 })
 forever(function () {
     pickUpRootBeer(Waitress, RootBeer)
