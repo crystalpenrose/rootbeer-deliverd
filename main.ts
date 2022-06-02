@@ -8,8 +8,7 @@ function deliverRootBeer () {
         music.baDing.play()
         effects.bubbles.startScreenEffect(500)
         info.changeScoreBy(1)
-        pause(500)
-        spawnNewRootBeer()
+        pause(1000)
     } else if (controller.A.isPressed() && RootBeer.tileKindAt(TileDirection.Bottom, assets.tile`Endtable`)) {
         unfollow(RootBeer, Waitress)
         info.changeScoreBy(1)
@@ -21,7 +20,6 @@ function deliverRootBeer () {
         music.wawawawaa.play()
         info.changeScoreBy(-1)
         pause(500)
-        spawnNewRootBeer()
     } else {
     	
     }
@@ -32,30 +30,30 @@ function unfollow (followerSprite: Sprite, controllingSprite: Sprite) {
 }
 function pickUpRootBeer (picker_upper: Sprite, thingtopickup: Sprite) {
     if (picker_upper.overlapsWith(thingtopickup)) {
-        follow(RootBeer, Waitress)
+        follow(thingtopickup, picker_upper)
     }
 }
 function follow (followerSprite: Sprite, controllingSprite: Sprite) {
     followerSprite.setPosition(controllingSprite.x, controllingSprite.y)
     followerSprite.setVelocity(controllingSprite.vx, controllingSprite.vy)
 }
-function spawnNewRootBeer () {
-    for (let index = 0; index <= 5; index++) {
-        newrootbeer.push(index)
-        newrootbeer = sprites.create(assets.image`RootBeer`, SpriteKind.LeaveToken)
-        newrootbeer.setPosition(scene.cameraProperty(CameraProperty.Right), scene.cameraProperty(CameraProperty.Top))
-    }
+function spawnEnemy (EnemySprite: Sprite, ImageOfEnemy: Image, x: number, y: number, vx: number, vy: number) {
+    EnemySprite = sprites.create(ImageOfEnemy, SpriteKind.Enemy)
+    EnemySprite.setPosition(x, y)
+    EnemySprite.setVelocity(vx, vy)
+    EnemySprite.setBounceOnWall(true)
+    EnemySprite.setStayInScreen(true)
 }
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
     music.powerDown.play()
     info.changeLifeBy(-1)
     pause(200)
 })
-let newrootbeer: number[] = []
+let myImage: Image = null
+let EnemySprite: Sprite = null
 let RootBeer: Sprite = null
 let Waitress: Sprite = null
-let mySprite = 0
-mySprite = null
+let mySprite = null
 scene.setBackgroundColor(13)
 tiles.setCurrentTilemap(tilemap`Level1Map`)
 info.setLife(2)
@@ -85,34 +83,86 @@ Waitress.ay = 0
 scene.cameraFollowSprite(Waitress)
 Waitress.setStayInScreen(true)
 RootBeer = sprites.create(assets.image`RootBeer`, SpriteKind.LeaveToken)
-RootBeer.setPosition(74, 91)
-let MountainDew = sprites.create(assets.image`MtnDew`, SpriteKind.Enemy)
-MountainDew.setVelocity(20, 10)
-MountainDew.setBounceOnWall(true)
-MountainDew.setStayInScreen(true)
-let Monster = sprites.create(assets.image`Monster`, SpriteKind.Enemy)
-Monster.setPosition(114, 7)
-Monster.setStayInScreen(true)
-let Mr_Pibb = sprites.create(assets.image`Mr Pibb`, SpriteKind.Enemy)
-Mr_Pibb.setPosition(49, 7)
-Mr_Pibb.setStayInScreen(true)
-newrootbeer = []
+let Mr_Pibb = sprites.create(img`
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    `, SpriteKind.Enemy)
+let MountainDew = sprites.create(img`
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    `, SpriteKind.Enemy)
+let Monster = sprites.create(img`
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    . . . . . . . . . . . . . . . . 
+    `, SpriteKind.Enemy)
+let DoOnlyOneTime = true
 forever(function () {
     if (controller.right.isPressed()) {
-        Waitress.vx = 30
+        Waitress.vx = 50
     }
     if (controller.left.isPressed()) {
-        Waitress.vx = -20
+        Waitress.vx = -10
     }
     if (controller.up.isPressed()) {
-        Waitress.vy = -30
+        Waitress.vy = -20
     }
     if (controller.down.isPressed()) {
         Waitress.vy = 100
     }
 })
 forever(function () {
-    Waitress.ay = 30
+    if (DoOnlyOneTime == true) {
+        if (info.score() == 0) {
+            myImage = assets.image`MtnDew`
+            spawnEnemy(MountainDew, myImage, 0, 0, 30, 30)
+            DoOnlyOneTime = false
+        }
+    }
+})
+forever(function () {
+    Waitress.vy += 10
 })
 forever(function () {
     pickUpRootBeer(Waitress, RootBeer)

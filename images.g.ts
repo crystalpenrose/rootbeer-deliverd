@@ -80,7 +80,7 @@ namespace myImages {
 . . . . . . . . . . . . . . . . 
 `;
             case "image4":
-            case "Mr Pibb":return img`
+            case "MrPibb":return img`
 . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . 
